@@ -1,5 +1,4 @@
-import { Dispatch } from 'redux';
-import axios, { AxiosError } from 'axios';
+import {Dispatch} from 'redux';
 import {
     FETCH_BOOKS_REQUEST,
     FETCH_BOOKS_SUCCESS,
@@ -9,6 +8,8 @@ import {
     SET_SORT_OPTION,
     LOAD_MORE_BOOKS_SUCCESS,
 } from './actionTypes';
+
+import axios from "axios";
 
 
 export const setSearchTerm = (searchTerm: string) => ({
@@ -29,16 +30,18 @@ export const setSortOption = (sortOption: string) => ({
 });
 
 
-export const fetchBooks = () => async (dispatch: Dispatch) => {
-    dispatch({ type: FETCH_BOOKS_REQUEST });
-
+export const fetchBooks = (q: string) => async (dispatch: Dispatch) => {
+    dispatch({type: FETCH_BOOKS_REQUEST});
     try {
-        const response = await axios.get('your_api_endpoint_here');
+        const response = await axios
+            .get(`${process.env.REACT_APP_API_URL}key=${process.env.REACT_APP_API_KEY}&q=""`);
+        console.log(response)
         dispatch({
             type: FETCH_BOOKS_SUCCESS,
             payload: response.data,
         });
-    } catch (error: any) { // Используйте тип any здесь
+
+    } catch (error: any) {
         dispatch({
             type: FETCH_BOOKS_FAILURE,
             payload: error.message,
@@ -49,7 +52,7 @@ export const fetchBooks = () => async (dispatch: Dispatch) => {
 
 export const loadMoreBooks = (page: number) => async (dispatch: Dispatch) => {
     try {
-        const response = await axios.get(`your_api_endpoint_here?page=${page}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}key=${process.env.REACT_APP_API_KEY}?page=${page}`);
         dispatch({
             type: LOAD_MORE_BOOKS_SUCCESS,
             payload: response.data,
